@@ -11,27 +11,27 @@ public class Main {
         byte []b = new byte[11111];
         Socket dataPort = null;
 
-        Boolean kode = false;
+        Boolean password = false;
         int i = 3;
-        String host, svarKode;
+        String host, answerPassword;
 
-        System.out.println("Skriv kode");
-        while (!kode){
+        System.out.println("Enter password");
+        while (!password){
             if (ind.nextLine().equals("123")){
-                kode =true;
-            } else { i--; System.out.printf("Forkert kode! Du har %d før din computer lukker ned\n", i); }
+                password =true;
+            } else { i--; System.out.printf("Wrong password! You have %d before your computer shuts down\n", i); }
             if (i == 0) {
 //                Runtime runtime = Runtime.getRuntime();
 //                Process proc = runtime.exec("shutdown -s -t 0");
 //                System.exit(0);
             }
         }
-//        System.out.println("Kode lykkedes\nSkriv host.");
+//        System.out.println("password lykkedes\nwrite host.");
 //        host = ind.nextLine();
 
         Socket s = new Socket("ftp.cs.brown.edu",21);
 
-        // Læser og skriver til serveren
+        // Reads and writes to the server
         PrintWriter outData = new PrintWriter(s.getOutputStream());
         BufferedReader bf = new BufferedReader(new InputStreamReader(s.getInputStream()));
 
@@ -51,30 +51,30 @@ public class Main {
         while(true) {
 
 
-            svarKode = fåSvar(bf);
+            answerPassword = getAnswer(bf);
 
-            if (svarKode.equals(221)){
+            if (answerPassword.equals(221)){
                 System.out.println("Service closing control connection."); break; }
-//            else if (svarKode.equals("220")){
-//                skriv(outData, "user"); fåSvar(bf);}
-//            else if (svarKode.equals("150")) {
+//            else if (answerPassword.equals("220")){
+//                write(outData, "user"); getAnswer(bf);}
+//            else if (answerPassword.equals("150")) {
 //                System.out.println("File status okay; about to open data connection.");
 ////              få data
-////              få svar
+////              få answer
 //                dataPort = null;
 //            }
 //            if (dataPort == null){
-//                dataPort = lavDataPort(s, bf, outData);
+//                dataPort = createDataPort(s, bf, outData);
 //            }
 //            hvis ingen dataport
 //              lav data port
-//            få bruger svar
+//            få bruger answer
 //            s.send(cmd + '\r\n')
 
 
 
             System.out.print(">");
-            skriv(outData, ind.nextLine());
+            write(outData, ind.nextLine());
         }
     }
 
@@ -82,16 +82,16 @@ public class Main {
 
 
 
-    public static String fåSvar(BufferedReader bf) throws IOException {
+    public static String getAnswer(BufferedReader bf) throws IOException {
 
-        String svar = bf.readLine();
+        String answer = bf.readLine();
 
         while (bf.ready()) {
-            System.out.println(svar);
-            svar = bf.readLine();
+            System.out.println(answer);
+            answer = bf.readLine();
         }
 
-        return svar.substring(0,3);
+        return answer.substring(0,3);
     }
 
 
@@ -109,13 +109,13 @@ public class Main {
 //
 
 
-    public static Socket lavDataPort(Socket s, BufferedReader bf, PrintWriter outData) throws IOException {
+    public static Socket createDataPort(Socket s, BufferedReader bf, PrintWriter outData) throws IOException {
 
-        skriv(outData, "PASV");
-        String svar = bf.readLine();
-        System.out.println(svar);
-//        int result1 = Integer.parseInt(svar.substring(42, 45));
-//        int result2 = Integer.parseInt(svar.substring(46, 48));
+        write(outData, "PASV");
+        String answer = bf.readLine();
+        System.out.println(answer);
+//        int result1 = Integer.parseInt(answer.substring(42, 45));
+//        int result2 = Integer.parseInt(answer.substring(46, 48));
 //
 //        System.out.println(result1 + result2);
 
@@ -126,7 +126,7 @@ public class Main {
     }
 
 
-    public static void skriv(PrintWriter outData, String ind ){
+    public static void write(PrintWriter outData, String ind ){
         outData.println(ind + "\r\n");
         outData.flush();
     }
